@@ -58,12 +58,12 @@ public class Test {
 
 		// Now create matcher object.
 		Matcher m = r.matcher(line);
-		if (m.find()) {
+		ArrayList<Object> curMatches = new ArrayList<Object>();
+		while (m.find()) {
 			System.out.println("Found value: " + m.group(0));
 			System.out.println("Found value: " + m.group(1));
 			System.out.println("Found value: " + m.group(2));
-		} else {
-			System.out.println("NO MATCH");
+			curMatches.add(m.group(2));
 		}
 	}
 
