@@ -34,12 +34,12 @@ public class DataHelperTest {
 	}
 
 	private boolean isPrime(int number) {
-		int i;
-		for (i = 2; i <= number / 2; i++) {
-			if (number % i == 0) {
-				return false;
+		boolean isPrime = true;
+		for (int i = 2; i <= number / 2; i++) {
+			if (number % i != 0) {
+				isPrime = false;
 			}
 		}
-		return true;
+		return isPrime;
 	}
 }
