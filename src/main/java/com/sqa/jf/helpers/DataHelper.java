@@ -34,15 +34,21 @@ public class DataHelper {
 		return getTextFileData(fileLocation, fileName, textFormat, false);
 	}
 
+	// public static Object[][] getTextFileData(String fileLocation, String
+	// fileName, TextFormat textFormat, Object... dataTypes) {
+	// return getTextFileData(fileLocation, fileName, textFormat, false,
+	// dataTypes);
+	// }
+
 	public static Object[][] getTextFileData(String fileLocation, String fileName, TextFormat textFormat,
-			Boolean hasLabels) {
+			Boolean hasLabels, Object... dataTypes) {
 		// Process data
 		Object[][] data;
 		// Collect data lines from text document supplied
 		ArrayList<String> lines = openFileAndCollectData(fileLocation, fileName);
 		switch (textFormat) {
 		case CSV:
-			data = parseCSVData(lines, hasLabels, new Object[] { Integer.class, Boolean.class });
+			data = parseCSVData(lines, hasLabels, dataTypes);
 			break;
 		case XML:
 			data = parseXMLData(lines, hasLabels);
@@ -58,6 +64,22 @@ public class DataHelper {
 			break;
 		}
 		return data;
+	}
+
+	/**
+	 * @param group
+	 * @param class1
+	 * @return
+	 */
+	private static Object convertDataType(String parameter, Object dataType) {
+		if (dataType.equals(Integer.TYPE)) {
+			return Integer.parseInt(parameter);
+		} else if (dataType.equals(Boolean.TYPE)) {
+			return Boolean.getBoolean(parameter);
+		} else {
+			System.out.println("Data type is a String or not recognized, returning a String for (" + parameter + ")");
+			return parameter;
+		}
 	}
 
 	/**
@@ -102,7 +124,8 @@ public class DataHelper {
 	 * @param objects
 	 * @return
 	 */
-	private static Object[][] parseCSVData(ArrayList<String> lines, boolean hasLabels, Object[] objects) {
+	private static Object[][] parseCSVData(ArrayList<String> lines, boolean hasLabels, Object[] dataTypes) {
+
 		ArrayList<Object> results = new ArrayList<Object>();
 		// Check for labels on first line
 		if (hasLabels) {
@@ -117,10 +140,20 @@ public class DataHelper {
 		Pattern r = Pattern.compile(pattern);
 
 		for (int i = 0; i < lines.size(); i++) {
+			int curDataType = 0;
 			ArrayList<Object> curMatches = new ArrayList<Object>();
 			Matcher m = r.matcher(lines.get(i));
 			while (m.find()) {
-				curMatches.add(m.group(2));
+				if (dataTypes.length > 0) {
+					try {
+						curMatches.add(convertDataType(m.group(2), dataTypes[curDataType]));
+					} catch (Exception e) {
+						System.out.println("DataTypes provided do not match parsed data results.");
+					}
+				} else {
+					curMatches.add(m.group(2));
+				}
+				curDataType++;
 			}
 			Object[] resultsObj = new Object[curMatches.size()];
 			curMatches.toArray(resultsObj);

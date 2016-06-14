@@ -15,8 +15,17 @@ public class DataHelperTest {
 		return data;
 	}
 
+	@DataProvider(name = "textDataTyped")
+	public Object[][] getDataTyped() {
+		Object[][] data;
+		data = DataHelper.getTextFileData("src/main/resources/", "data.csv", TextFormat.CSV, true, Integer.TYPE,
+				Boolean.TYPE);
+		DisplayHelper.multArray(data);
+		return data;
+	}
+
 	@Test(dataProvider = "textData")
-	public void textReadingFile(String number, String isPrime) {
+	public void testReadingFile(String number, String isPrime) {
 		try {
 			System.out.println("Number " + number + ", is Prime? (" + isPrime + ")");
 			boolean actualResult = isPrime(Integer.parseInt(number));
@@ -26,8 +35,8 @@ public class DataHelperTest {
 		}
 	}
 
-	@Test(dataProvider = "textData", enabled = false)
-	public void textReadingFileTyped(int number, boolean isPrime) {
+	@Test(dataProvider = "textDataTyped")
+	public void testReadingFileTyped(int number, boolean isPrime) {
 		System.out.println("Number " + number + ", is Prime? (" + isPrime + ")");
 		boolean actualResult = isPrime(number);
 		Assert.assertEquals(actualResult, isPrime, "Number is not prime based on data set.");
