@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sqa.jf</groupId>
-	<artifactId>selenium-ide-project</artifactId>
+	<artifactId>auto-project</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>Selenium IDE Project</name>
-	<description>An automation project which uses exported code from Selenium IDE export function.</description>
+	<name>Automation Project</name>
+	<description>An automation project which uses Selenium WebDriver to drive test.</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.testng</groupId>

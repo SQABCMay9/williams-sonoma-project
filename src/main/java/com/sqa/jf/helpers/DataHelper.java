@@ -34,12 +34,6 @@ public class DataHelper {
 		return getTextFileData(fileLocation, fileName, textFormat, false);
 	}
 
-	// public static Object[][] getTextFileData(String fileLocation, String
-	// fileName, TextFormat textFormat, Object... dataTypes) {
-	// return getTextFileData(fileLocation, fileName, textFormat, false,
-	// dataTypes);
-	// }
-
 	public static Object[][] getTextFileData(String fileLocation, String fileName, TextFormat textFormat,
 			Boolean hasLabels, Object... dataTypes) {
 		// Process data
@@ -64,6 +58,11 @@ public class DataHelper {
 			break;
 		}
 		return data;
+	}
+
+	public static Object[][] getTextFileData(String fileLocation, String fileName, TextFormat textFormat,
+			Object... dataTypes) {
+		return getTextFileData(fileLocation, fileName, textFormat, false, dataTypes);
 	}
 
 	/**
