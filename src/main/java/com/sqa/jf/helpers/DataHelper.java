@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.regex.*;
 
 import com.sqa.jf.helpers.data.*;
+import com.sqa.jf.helpers.exceptions.*;
 
 /**
  * DataHelper //ADDD (description of class)
@@ -71,13 +72,27 @@ public class DataHelper {
 	 * @return
 	 */
 	private static Object convertDataType(String parameter, Object dataType) {
-		if (dataType.equals(Integer.TYPE)) {
-			return Integer.parseInt(parameter);
-		} else if (dataType.equals(Boolean.TYPE)) {
-			return Boolean.getBoolean(parameter);
-		} else {
-			System.out.println("Data type is a String or not recognized, returning a String for (" + parameter + ")");
-			return parameter;
+		try {
+			if (dataType.equals(Integer.TYPE)) {
+				return Integer.parseInt(parameter);
+			} else if (dataType.equals(Boolean.TYPE)) {
+				if (parameter.equalsIgnoreCase("true") | parameter.equalsIgnoreCase("false")) {
+					return Boolean.parseBoolean(parameter);
+				} else {
+					throw new BooleanFormatException();
+				}
+
+			} else {
+				System.out
+						.println("Data type is a String or not recognized, returning a String for (" + parameter + ")");
+				return parameter;
+			}
+		} catch (NumberFormatException e) {
+			System.err.println("Number is not in correct format (" + parameter + ")");
+			return 0;
+		} catch (BooleanFormatException e) {
+			System.err.println("Boolean value is not a correct String (" + parameter + ")");
+			return false;
 		}
 	}
 
@@ -133,7 +148,7 @@ public class DataHelper {
 		}
 
 		// String to be scanned to find the pattern.
-		String pattern = "(,*)([a-zA-Z0-9]+)(,*)";
+		String pattern = "(,*)([a-zA-Z0-9\\s]+)(,*)";
 
 		// Create a Pattern object
 		Pattern r = Pattern.compile(pattern);
@@ -145,12 +160,12 @@ public class DataHelper {
 			while (m.find()) {
 				if (dataTypes.length > 0) {
 					try {
-						curMatches.add(convertDataType(m.group(2), dataTypes[curDataType]));
+						curMatches.add(convertDataType(m.group(2).trim(), dataTypes[curDataType]));
 					} catch (Exception e) {
 						System.out.println("DataTypes provided do not match parsed data results.");
 					}
 				} else {
-					curMatches.add(m.group(2));
+					curMatches.add(m.group(2).trim());
 				}
 				curDataType++;
 			}
