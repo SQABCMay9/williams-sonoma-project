@@ -16,14 +16,15 @@ public class ApachePOITest {
 			ClassLoader classLoader = ApachePOITest.class.getClassLoader();
 			//
 			// Get InputStream via Class Loader (Setup Needed)
-			InputStream file = classLoader.getResourceAsStream("poi-example.xlsx");
+			InputStream oldExcelFormatFile = classLoader.getResourceAsStream("poi-example.xls");
+			InputStream newExcelFormatFile = classLoader.getResourceAsStream("poi-example.xlsx");
 
 			// Get the file using basic File and relative path to directory
-			// InputStream file = new FileInputStream(new
+			// InputStream oldExcelFormatFile = new FileInputStream(new
 			// File("poi-example.xls"));
 
 			// Get the workbook instance for XLS file
-			XSSFWorkbook workbook = new XSSFWorkbook(file);
+			XSSFWorkbook workbook = new XSSFWorkbook(newExcelFormatFile);
 
 			// Get first sheet from the workbook
 			XSSFSheet sheet = workbook.getSheetAt(0);
@@ -56,14 +57,13 @@ public class ApachePOITest {
 				System.out.println("");
 			}
 			// Close File Read Stream
-			file.close();
+			newExcelFormatFile.close();
 			// Create an OutputStream to write
 			FileOutputStream out = new FileOutputStream(new File("src/main/resources/excel-output.xls"));
 			// Write the workbook
 			workbook.write(out);
 			// Close output Stream
 			out.close();
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
