@@ -1,5 +1,3 @@
-#Automation Project
-
 *Basic Automation Project Structure*
 
 **Java 7**
