@@ -1,6 +1,5 @@
 package com.sqa.jf.core;
 
-
 import java.util.concurrent.*;
 
 import org.openqa.selenium.*;
@@ -54,6 +53,8 @@ public class BasicTest {
 		driver.quit();
 	}
 
+	private boolean acceptNextAlert = true;
+
 	/**
 	 * Constructor
 	 */
@@ -69,6 +70,42 @@ public class BasicTest {
 		// Go to base URL
 		getDriver().get(getBaseURL());
 
+	}
+
+	@SuppressWarnings("unused")
+	protected String closeAlertAndGetItsText() {
+		try {
+			Alert alert = this.driver.switchTo().alert();
+			String alertText = alert.getText();
+			if (this.acceptNextAlert) {
+				alert.accept();
+			} else {
+				alert.dismiss();
+			}
+			return alertText;
+		} finally {
+			this.acceptNextAlert = true;
+		}
+	}
+
+	@SuppressWarnings("unused")
+	protected boolean isAlertPresent() {
+		try {
+			this.driver.switchTo().alert();
+			return true;
+		} catch (NoAlertPresentException e) {
+			return false;
+		}
+	}
+
+	@SuppressWarnings("unused")
+	protected boolean isElementPresent(By by) {
+		try {
+			this.driver.findElement(by);
+			return true;
+		} catch (NoSuchElementException e) {
+			return false;
+		}
 	}
 
 }
