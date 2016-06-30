@@ -2,6 +2,7 @@ package com.sqa.jf.core;
 
 import java.util.concurrent.*;
 
+import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.*;
 import org.openqa.selenium.firefox.*;
@@ -10,6 +11,7 @@ import org.testng.annotations.*;
 public class BasicTest {
 	private static String baseURL = "http://mtv.com";
 	private static WebDriver driver;
+	private static Logger log = Logger.getLogger(BasicTest.class);
 
 	/**
 	 * @return the baseURL
@@ -23,6 +25,13 @@ public class BasicTest {
 	 */
 	public static WebDriver getDriver() {
 		return driver;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public static Logger getLog() {
+		return log;
 	}
 
 	@BeforeClass(enabled = false)
