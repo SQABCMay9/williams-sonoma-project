@@ -1,15 +1,14 @@
 package com.sqa.jf.core;
 
-import java.util.concurrent.*;
-
 import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.*;
 import org.openqa.selenium.firefox.*;
+import org.openqa.selenium.support.ui.*;
 import org.testng.annotations.*;
 
 public class BasicTest {
-	private static String baseURL = "http://mtv.com";
+	private static String baseURL;
 	private static WebDriver driver;
 	private static Logger log = Logger.getLogger(BasicTest.class);
 
@@ -34,27 +33,27 @@ public class BasicTest {
 		return log;
 	}
 
-	@BeforeClass(enabled = false)
+	@BeforeClass(enabled = true)
 	public static void setupChrome() {
 		System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
 		driver = new ChromeDriver();
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.get(baseURL);
+		// driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
 	}
 
-	@BeforeClass(enabled = true)
+	@BeforeClass(enabled = false)
 	public static void setupFirefox() {
 		driver = new FirefoxDriver();
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.get(baseURL);
+		// driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
 	}
 
 	@BeforeClass(enabled = false)
 	public static void setupNewFirefoxDriver() {
 		System.setProperty("webdriver.gecko.driver", "drivers/geckodriver.exe");
 		driver = new MarionetteDriver();
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-		driver.get(baseURL);
+		// driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
 	}
 
 	@AfterClass
@@ -74,11 +73,10 @@ public class BasicTest {
 
 	@BeforeMethod
 	public void setupTest() {
-		// Delete all saved cookies
-		getDriver().manage().deleteAllCookies();
 		// Go to base URL
 		getDriver().get(getBaseURL());
-
+		// Delete all saved cookies
+		// getDriver().manage().deleteAllCookies();
 	}
 
 	@SuppressWarnings("unused")
@@ -110,9 +108,11 @@ public class BasicTest {
 	@SuppressWarnings("unused")
 	protected boolean isElementPresent(By by) {
 		try {
-			this.driver.findElement(by);
+			WebElement element = (new WebDriverWait(getDriver(), 20))
+					.until(ExpectedConditions.visibilityOfElementLocated(by));
 			return true;
-		} catch (NoSuchElementException e) {
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			return false;
 		}
 	}
