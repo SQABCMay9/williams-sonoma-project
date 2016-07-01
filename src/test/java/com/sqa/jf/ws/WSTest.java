@@ -30,6 +30,8 @@ import com.sqa.jf.core.*;
  */
 public class WSTest extends BasicTest {
 
+	private static boolean popupRemoved = false;
+
 	/**
 	 * @param baseURL
 	 */
@@ -38,14 +40,17 @@ public class WSTest extends BasicTest {
 	}
 
 	public void checkForPopupAndClose() {
-		getLog().error("Checking for Pop-up on page " + getDriver().getTitle());
+		if (!popupRemoved) {
+			getLog().info("Checking for Pop-up on page " + getDriver().getTitle());
 
-		if (isElementPresent(By.className("overlayCloseButton"))) {
-			getLog().fatal("Pop-up detected and removed.");
-			WebElement popup = getDriver().findElement(By.className("overlayCloseButton"));
-			popup.click();
-		} else {
-			getLog().warn("Pop-up not detected and can not be removed.");
+			if (isPopupPresent(By.className("overlayCloseButton"))) {
+				getLog().warn("Pop-up detected and will be removed.");
+				WebElement popup = getDriver().findElement(By.className("overlayCloseButton"));
+				popup.click();
+				popupRemoved = true;
+			} else {
+				getLog().info("Pop-up not detected and can not be removed.");
+			}
 		}
 	}
 
@@ -60,23 +65,42 @@ public class WSTest extends BasicTest {
 				{ "Outdoor", "Beekeeping", "Honey Extracting Suite", 2 } };
 	}
 
+	public boolean isPopupPresent(By by) {
+		try {
+			WebElement element = (new WebDriverWait(getDriver(), 120))
+					.until(ExpectedConditions.elementToBeClickable(by));
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@BeforeMethod
+	public void setupWS() {
+		popupRemoved = false;
+	}
+
 	@Test(dataProvider = "getData")
 	public void wsTest(String menuItemText, String subItemText, String item, int quanity) {
-		getLog().info("Starting test at " + getDriver().getTitle());
+		getLog().warn("-----------------------------------------------------");
+		getLog().warn("Starting test at " + getDriver().getTitle());
 
 		By menuItemBy = By.linkText(menuItemText);
 		By subItemBy = By.linkText(subItemText);
 
 		checkForPopupAndClose();
-		WebElement menuItem = (new WebDriverWait(getDriver(), 10))
+		WebElement menuItem = (new WebDriverWait(getDriver(), 20))
 				.until(ExpectedConditions.visibilityOfElementLocated(menuItemBy));
 		menuItem.click();
+		getLog().warn("Click on page navigating to: " + getDriver().getTitle());
 		checkForPopupAndClose();
-		WebElement subItem = (new WebDriverWait(getDriver(), 10))
+		WebElement subItem = (new WebDriverWait(getDriver(), 20))
 				.until(ExpectedConditions.visibilityOfElementLocated(subItemBy));
 		subItem.click();
+		getLog().warn("Click on page navigating to: " + getDriver().getTitle());
 		checkForPopupAndClose();
-		getLog().fatal("Finished on page " + getDriver().getTitle());
+		getLog().warn("Finished on page " + getDriver().getTitle());
+		getLog().warn("-----------------------------------------------------");
 	}
 
 }

@@ -4,7 +4,6 @@ import org.apache.log4j.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.*;
 import org.openqa.selenium.firefox.*;
-import org.openqa.selenium.support.ui.*;
 import org.testng.annotations.*;
 
 public class BasicTest {
@@ -33,7 +32,7 @@ public class BasicTest {
 		return log;
 	}
 
-	@BeforeClass(enabled = true)
+	@BeforeClass(enabled = false)
 	public static void setupChrome() {
 		System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
 		driver = new ChromeDriver();
@@ -41,7 +40,7 @@ public class BasicTest {
 		driver.manage().window().maximize();
 	}
 
-	@BeforeClass(enabled = false)
+	@BeforeClass(enabled = true)
 	public static void setupFirefox() {
 		driver = new FirefoxDriver();
 		// driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -76,7 +75,7 @@ public class BasicTest {
 		// Go to base URL
 		getDriver().get(getBaseURL());
 		// Delete all saved cookies
-		// getDriver().manage().deleteAllCookies();
+		getDriver().manage().deleteAllCookies();
 	}
 
 	@SuppressWarnings("unused")
@@ -108,8 +107,7 @@ public class BasicTest {
 	@SuppressWarnings("unused")
 	protected boolean isElementPresent(By by) {
 		try {
-			WebElement element = (new WebDriverWait(getDriver(), 20))
-					.until(ExpectedConditions.visibilityOfElementLocated(by));
+			WebElement element = getDriver().findElement(by);
 			return true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
